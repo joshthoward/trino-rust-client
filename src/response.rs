@@ -3,6 +3,21 @@ use serde_json::Value;
 
 #[derive(Debug, PartialEq, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct Info {
+    pub node_version: NodeVersion,
+    pub environment: String,
+    pub coordinator: bool,
+    pub starting: bool,
+    pub uptime: String,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+pub struct NodeVersion {
+    pub version: String,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct QueryResults {
     pub id: String,
     pub info_uri: String,
@@ -82,6 +97,8 @@ pub struct QueryStage {
 #[derive(Debug, PartialEq, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum QueryState {
+    Aborted,
+    Failed,
     Finished,
     Finishing,
     Flushing,
@@ -155,6 +172,33 @@ mod tests {
                 progress_percentage: None,
             },
             warnings: vec![],
+        };
+        assert_eq!(res, exp);
+    }
+
+    #[test]
+    fn deserialize_info_response() {
+        let res: Info = serde_json::from_str(
+            r#"
+            {
+              "nodeVersion": {
+                "version": "360"
+              },
+              "environment": "docker",
+              "coordinator": true,
+              "starting": false,
+              "uptime": "1.00m"
+            }"#,
+        )
+        .unwrap();
+        let exp = Info {
+            node_version: NodeVersion {
+                version: String::from("360"),
+            },
+            environment: String::from("docker"),
+            coordinator: true,
+            starting: false,
+            uptime: String::from("1.00m"),
         };
         assert_eq!(res, exp);
     }
