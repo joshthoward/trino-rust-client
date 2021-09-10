@@ -1,7 +1,15 @@
 [package]
 name = "trino"
 version = "0.1.0"
+authors = ["Josh Howard <joshthoward@gmail.com>"]
 edition = "2018"
+description = "A simple TrinoDB client for Rust"
+documentation = "https://docs.rs/trino"
+readme = "README.md"
+repository = "https://github.com/joshthoward/trino-rust-client.git"
+license = "Apache-2.0"
+keywords = ["trinodb", "sql"]
+categories = ["api-bindings", "database"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
