@@ -1,4 +1,4 @@
-mod response;
+pub mod response;
 
 use reqwest::{Client as ReqwestClient, Response};
 use response::*;
@@ -24,6 +24,8 @@ impl Client {
     // TODO:
     //  - Implement query cancellation i.e. DELETE to nextUri
     //  - Implement own errors
+    //  - Implement paging
+    //  - Add client builder
     //  - Can we remove `.clone()` below?
     pub async fn query<T>(&self, query_str: &str) -> Result<Vec<T>, reqwest::Error>
     where
