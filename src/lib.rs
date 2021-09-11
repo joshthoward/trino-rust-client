@@ -15,7 +15,7 @@ impl Client {
     pub fn new(base_url: &str, port: u32, user: &str) -> Client {
         Client {
             base_url: base_url.to_string(),
-            port: port,
+            port,
             user: user.to_string(),
             http_client: ReqwestClient::new(),
         }
@@ -35,20 +35,16 @@ impl Client {
         let mut response_body: QueryResults = response.json().await?;
 
         let mut data = Vec::new();
-        loop {
-            if let Some(next_uri) = response_body.next_uri {
-                response = self.next_request(&next_uri).await?;
-                response_body = response.json().await?;
-                if let Some(rows) = response_body.data {
-                    data.append(
-                        &mut rows
-                            .iter()
-                            .map(|x| serde_json::from_value(x.clone()).unwrap())
-                            .collect(),
-                    );
-                }
-            } else {
-                break;
+        while let Some(next_uri) = response_body.next_uri {
+            response = self.next_request(&next_uri).await?;
+            response_body = response.json().await?;
+            if let Some(rows) = response_body.data {
+                data.append(
+                    &mut rows
+                        .iter()
+                        .map(|x| serde_json::from_value(x.clone()).unwrap())
+                        .collect(),
+                );
             }
         }
         Ok(data)
