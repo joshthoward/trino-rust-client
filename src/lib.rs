@@ -38,12 +38,7 @@ impl Client {
             response = self.next_request(&next_uri).await?;
             response_body = response.json().await?;
             if let Some(rows) = response_body.data {
-                data.append(
-                    &mut rows
-                        .into_iter()
-                        .map(|x| serde_json::from_value(x).unwrap())
-                        .collect(),
-                );
+                data.extend(rows.into_iter().map(|x| serde_json::from_value(x).unwrap()));
             }
         }
         Ok(data)
