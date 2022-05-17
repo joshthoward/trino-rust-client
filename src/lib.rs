@@ -26,7 +26,6 @@ impl Client {
     //  - Implement own errors
     //  - Implement paging
     //  - Add client builder
-    //  - Can we remove `.clone()` below?
     pub async fn query<T>(&self, query_str: &str) -> Result<Vec<T>, reqwest::Error>
     where
         T: DeserializeOwned,
@@ -41,8 +40,8 @@ impl Client {
             if let Some(rows) = response_body.data {
                 data.append(
                     &mut rows
-                        .iter()
-                        .map(|x| serde_json::from_value(x.clone()).unwrap())
+                        .into_iter()
+                        .map(|x| serde_json::from_value(x).unwrap())
                         .collect(),
                 );
             }
